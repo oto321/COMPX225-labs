@@ -1,0 +1,25 @@
+SELECT COUNT(*) FROM Animals WHERE category = "Reptile";
+  COUNT = 4
+
+SELECT * FROM Animals WHERE public_feeding = "Y";
+  animal_name	  category	diet	    public_feeding	native	
+  Chimpanzee	  Mammal	  Omnivore	Y	              N	
+  Elephant	    Mammal	  Herbivore	Y	              N	
+  Giraffe	      Mammal	  Herbivore	Y	              N	
+  Kangaroo	    Mammal	  Herbivore	Y	              N	
+  Lion	        Mammal	  Carnivore	Y	              N	
+  Otter	        Mammal	  Carnivore	Y	              N	
+  Penguin	      Bird	    Carnivore	Y	              N	
+  Rhinoceros	  Mammal	  Herbivore	Y	              N	
+  Zebra	        Mammal	  Herbivore	Y	              N	
+
+SELECT COUNT(*) FROM Animals WHERE category = "Bird" and native = "Y";
+  COUNT = 4
+
+SELECT * FROM Animals WHERE diet = "Omnivore";
+  animal_name	category	diet	    public_feeding	native	
+  Chimpanzee	Mammal	  Omnivore	Y	              N	
+  Kea	        Bird	    Omnivore	N	              Y	
+  Kiwi	      Bird	    Omnivore	N	              Y	
+  Red Panda	  Mammal	  Omnivore	N	              N	
+  Weka	      Bird	    Omnivore	N	              Y
