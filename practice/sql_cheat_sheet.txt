@@ -1,0 +1,147 @@
+==========================
+DATABASE DESIGN & SQL CHEAT SHEET
+==========================
+
+1. DATABASE DESIGN PHASES
+--------------------------
+1) Conceptual Model (ER Diagram):
+   - Entities, Attributes, Relationships, Cardinality
+
+2) Logical Model (Relational Schema):
+   - Tables, Primary Keys, Foreign Keys, Data Types
+
+3) Physical Model (SQL Implementation):
+   - CREATE TABLE, INSERT, SELECT
+
+--------------------------
+2. SQL BASICS
+--------------------------
+CREATE TABLE syntax:
+CREATE TABLE table_name (
+    column_name data_type [constraints],
+    ...
+    PRIMARY KEY (column1 [, column2]),
+    FOREIGN KEY (column_name) REFERENCES other_table(other_column),
+    CHECK (condition)
+);
+
+Data Types:
+- INT
+- VARCHAR(n)
+- DATE
+- TIME
+- ENUM('val1','val2',...)
+
+Constraints:
+- PRIMARY KEY: Unique + Not NULL
+- FOREIGN KEY: Enforces referential integrity
+- NOT NULL: Must have a value
+- CHECK: Enforces a condition
+- ENUM: Restrict to predefined values
+
+Insert Data:
+INSERT INTO table_name (col1, col2, ...) VALUES (val1, val2, ...);
+
+Retrieve Data:
+SELECT column1, column2 FROM table_name WHERE condition;
+
+Operators:
+- =, <>, >, <, >=, <=
+- LIKE: pattern matching ('%abc%', 'abc%')
+- IN (...): value in list
+- IS NULL / IS NOT NULL
+
+Joins:
+SELECT columns
+FROM table1
+JOIN table2 ON table1.col = table2.col;
+
+Aggregations:
+SELECT COUNT(*), SUM(col), AVG(col), MIN(col), MAX(col) FROM table;
+
+Subqueries:
+SELECT ... WHERE col IN (SELECT col FROM ...);
+
+Set Operators:
+UNION, INTERSECT, EXCEPT
+
+--------------------------
+3. INTEGRITY RULES
+--------------------------
+Entity Integrity: PK not null, unique
+Referential Integrity: FK must match parent key
+Domain Integrity: Valid values via data type or CHECK
+User-Defined Integrity: Business-specific rules
+
+--------------------------
+4. EXAMPLE - Swimming DB
+--------------------------
+CREATE TABLE children (
+    child_id INT PRIMARY KEY,
+    fname VARCHAR(50) NOT NULL,
+    lname VARCHAR(50) NOT NULL,
+    phone VARCHAR(20),
+    grade ENUM('Beginner','Novice','Skilled','Expert') NOT NULL
+);
+
+CREATE TABLE instructors (
+    staff_no INT PRIMARY KEY,
+    fname VARCHAR(50) NOT NULL,
+    lname VARCHAR(50) NOT NULL,
+    phone VARCHAR(20)
+);
+
+CREATE TABLE lessons (
+    lesson_id INT PRIMARY KEY,
+    day VARCHAR(10),
+    time TIME,
+    grade ENUM('Beginner','Novice','Skilled','Expert'),
+    staff_no INT,
+    FOREIGN KEY (staff_no) REFERENCES instructors(staff_no)
+);
+
+CREATE TABLE bookings (
+    child_id INT,
+    lesson_id INT,
+    PRIMARY KEY (child_id, lesson_id),
+    FOREIGN KEY (child_id) REFERENCES children(child_id),
+    FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id)
+);
+
+INSERT INTO instructors VALUES
+(100, 'Moss', 'Burmester', '021 555-1000'),
+(200, 'Helen', 'Norfolk', '021 555-2000');
+
+INSERT INTO lessons VALUES
+(1, 'Mon', '13:00', 'Beginner', 100),
+(2, 'Mon', '15:00', 'Skilled', 200);
+
+INSERT INTO children VALUES
+(1, 'Bart', 'Simpson', '027 555-1000', 'Novice'),
+(2, 'Lisa', 'Simpson', '027 555-1000', 'Skilled');
+
+INSERT INTO bookings VALUES
+(1, 2),
+(2, 1);
+
+-- Find Skilled lessons
+SELECT lesson_id, day, time FROM lessons WHERE grade = 'Skilled';
+
+-- Find all children and their booked lessons
+SELECT c.fname, c.lname, l.day, l.time
+FROM bookings b
+JOIN children c ON b.child_id = c.child_id
+JOIN lessons l ON b.lesson_id = l.lesson_id;
+
+--------------------------
+5. EXAM LAYOUT
+--------------------------
+- 100 min, open book (notes, Moodle, internet allowed — no AI tools)
+- Given .sql starter file, test in phpMyAdmin, submit file to Moodle
+- Tasks:
+  1) Extend ER diagram
+  2) Write relational model
+  3) CREATE TABLE with PK, FK, constraints
+  4) INSERT sample data
+  5) SELECT queries (simple, joins, subqueries)
+  6) Test constraints with invalid data
